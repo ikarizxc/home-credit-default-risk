@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-
-import pandas as pd
 from src.model_trainer import ModelTrainer
 
 class BaseHypothesRunner(ABC):
@@ -19,4 +17,4 @@ class BaseHypothesRunner(ABC):
         X_train, y_train, X_test = self._get_prepared_data()
         
         self.model_trainer.train_model(X_train, y_train, test_size)
-        self.model_trainer.get_submission(X_test, f'{self.__class__.__name__}_{datetime.now().strftime("%Y-%m-%d_%H:%M:%S")}')
+        self.model_trainer.get_submission(X_test, f'{self.__class__.__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}')

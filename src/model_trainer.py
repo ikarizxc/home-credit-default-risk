@@ -80,4 +80,4 @@ class ModelTrainer():
                 'feature': self._model.feature_names_in_
             }).sort_values(by='importances', ascending=False)
         else:
-            raise AttributeError("Model you fitted doesn't has attrubite 'feature_importances_'")
+            raise AttributeError("Model you fitted doesn't has attrubite to get importances")
