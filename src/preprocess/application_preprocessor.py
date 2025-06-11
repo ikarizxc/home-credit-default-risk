@@ -17,10 +17,10 @@ class ApplicationPreprocessor(BasePreprocessor):
         
         X = pd.concat([self._other, self._preprocessed], axis=1)
                 
-        X_train = X[X['is_train'] == 1][self._preprocessed.columns]
-        X_test = X[X['is_train'] == 0][self._preprocessed.columns]
+        X_train = X[X['is_train'] == 1].drop(columns=['is_train'])
+        X_test = X[X['is_train'] == 0].drop(columns=['is_train'])
         
-        return X_train, self._y, X_test, self._test_ids
+        return X_train, self._y, X_test
         
     def add_family_status(self):
         self._preprocessed['SINGLE_FAMILY_STATUS'] = (

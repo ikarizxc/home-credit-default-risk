@@ -1,5 +1,4 @@
 from .model_trainer import ModelTrainer
-from .baseline import Baseline
 
 from .preprocess.base_preprocessor import BasePreprocessor
 from .preprocess.application_preprocessor import ApplicationPreprocessor
@@ -9,6 +8,8 @@ from .preprocess.installments_payments_preprocessor import InstallmentsPaymentsP
 from .preprocess.pos_cash_balance_preprocessor import PosCashBalancePreprocessor
 from .preprocess.previous_applications_preprocessor import PreviousApplicationsPreprocessor
 
+from .hypotheses.base_hypothes_runner import BaseHypothesRunner
+from .hypotheses.baseline import Baseline
 from .hypotheses.hypothes_1 import HypothesCorrelation
 from .hypotheses.hypothes_2 import HypothesDaysPercents
 from .hypotheses.hypothes_3 import HypothesExtSources

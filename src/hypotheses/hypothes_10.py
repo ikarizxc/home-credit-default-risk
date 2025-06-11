@@ -1,11 +1,11 @@
-from src.model_trainer import ModelTrainer
+from src.hypotheses.base_hypothes_runner import BaseHypothesRunner
 from src.preprocess.application_preprocessor import ApplicationPreprocessor
 
-class HypothesFamilyStatus(ModelTrainer):
-    def __init__(self, model, params_grid=None, test_size=0.3, n=None):
-        super().__init__(model, params_grid, test_size, n)
-
-    def _prepare_data(self):
+class HypothesFamilyStatus(BaseHypothesRunner):
+    def __init__(self, n=None):
+        super().__init__(n)
+    
+    def _get_prepared_data(self):
         application = ApplicationPreprocessor(self.n)
         application.delete_high_correlation_features()
         application.add_days_percents_features()
@@ -17,4 +17,6 @@ class HypothesFamilyStatus(ModelTrainer):
         application.add_bad_car()
         application.add_contacts_number()
         application.add_family_status()
-        return application.get_prepared_data()
+        
+        X_train, y_train, X_test = application.get_prepared_data()
+        return X_train, y_train, X_test

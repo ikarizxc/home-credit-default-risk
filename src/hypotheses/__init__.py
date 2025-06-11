@@ -1,3 +1,6 @@
+from .base_hypothes_runner import BaseHypothesRunner
+from .baseline import Baseline
+
 from .hypothes_1 import HypothesCorrelation
 from .hypothes_2 import HypothesDaysPercents
 from .hypothes_3 import HypothesExtSources

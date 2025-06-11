@@ -175,3 +175,5 @@ cython_debug/
 
 hw
 data
+submissions
+.DS_Store
