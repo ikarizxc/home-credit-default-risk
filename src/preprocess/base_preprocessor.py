@@ -1,13 +1,33 @@
 from abc import ABC, abstractmethod
+from typing import List
 import pandas as pd
 import numpy as np
 
 class BasePreprocessor(ABC):
+    """
+    Базовый класс для препроцессинга данных.
+    Содержит общие шаги: удаление дубликатов, заполнение пропусков, кодирование категорий и т.д.
+    """
     @abstractmethod
-    def get_prepared_data(self):
+    def get_prepared_data(self) -> pd.DataFrame:
+        """
+        Выполняет полный пайплайн препроцессинга и возвращает готовый DataFrame.
+
+        Returns:
+            pd.DataFrame: Обработанные данные.
+        """
         pass
     
-    def _dummy_encode_categorical_features(self, df: pd.DataFrame):
+    def _dummy_encode_categorical_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Кодирует категориальные признаки в дамми-переменные.
+
+        Args:
+            df (pd.DataFrame): Входной DataFrame.
+
+        Returns:
+            pd.DataFrame: DataFrame с замененными категориальными признаками на дамми.
+        """
         cat_cols = self._get_categorical_features(df)
         df_dummy_encoded = df.copy()
         for col in cat_cols:
@@ -19,7 +39,18 @@ class BasePreprocessor(ABC):
             df_dummy_encoded = pd.concat([df_dummy_encoded.drop(col, axis=1), dummies], axis=1)
         return df_dummy_encoded
     
-    def _delete_high_correlation_features(self, df: pd.DataFrame, threshold=0.85):
+    def _delete_high_correlation_features(self, df: pd.DataFrame, threshold: float=0.85) -> pd.DataFrame:
+        """
+        Удаляет признаки с корреляцией выше threshold.
+
+        Args:
+            df (pd.DataFrame): Входной DataFrame.
+            threshold (Optional[float]): Порог корреляции.            
+
+        Returns:
+            pd.DataFrame: DataFrame с ограниченными выбросами.
+        """
+        
         num_cols = df.select_dtypes(include=[np.number]).columns
         
         corr_matrix = df[num_cols].corr().abs()
@@ -31,7 +62,16 @@ class BasePreprocessor(ABC):
         df_reduced.drop(columns=to_drop, inplace=True)
         return df_reduced
     
-    def _cap_outliers(self, df: pd.DataFrame):
+    def _cap_outliers(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Ограничивает выбросы числовых признаков в пределах 1.5 * IQR.
+
+        Args:
+            df (pd.DataFrame): Входной DataFrame.
+
+        Returns:
+            pd.DataFrame: DataFrame с ограниченными выбросами.
+        """
         num_cols = df.select_dtypes(include=[np.number]).columns
         df_capped = df.copy()
         for col in num_cols:
@@ -43,15 +83,43 @@ class BasePreprocessor(ABC):
             
         return df_capped
         
-    def _delete_duplicates(self, df: pd.DataFrame):
+    def _delete_duplicates(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Удаляет дублирующиеся строки из DataFrame.
+
+        Args:
+            df (pd.DataFrame): Входной DataFrame.
+
+        Returns:
+            pd.DataFrame: DataFrame без дубликатов.
+        """
         df_no_duplicates = df.copy()
         return df_no_duplicates.drop_duplicates()
     
-    def _fill_null_values(self, df: pd.DataFrame, columns, value):
+    def _fill_null_values(self, df: pd.DataFrame, columns, value) -> pd.DataFrame:
+        """
+        Заполняет проспуски в данных значением value.
+
+        Args:
+            df (pd.DataFrame): Входной DataFrame.
+            value: Значение, на которые заменяются пропуски.
+
+        Returns:
+            df (pd.DataFrame): DataFrame без пропусков.
+        """
         df_filled = df.copy()[columns].fillna(value)
         return df_filled
     
-    def _get_categorical_features(self, df: pd.DataFrame):
+    def _get_categorical_features(self, df: pd.DataFrame) -> List[str]:
+        """
+        Возвращает список категориальных признаков в DataFrame.
+
+        Args:
+            df (pd.DataFrame): Входной DataFrame.
+
+        Returns:
+            List[str]: Список имен категориальных столбцов.
+        """
         return df.select_dtypes(
             include=['object', 'category', 'string']
         ).columns.tolist()

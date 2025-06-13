@@ -3,10 +3,25 @@ from src.preprocess.base_preprocessor import BasePreprocessor
 
 
 class PreviousApplicationsPreprocessor(BasePreprocessor):
+    """
+    Класс для препроцессинга данных previous_application.
+    """
     def __init__(self, n=None):
+        """
+        Загружает previous_application CSV.
+
+        Args:
+            n (Optional[int]): Кол-во загружаемых строк из csv файлов.
+        """
         self.previous_applications = pd.read_csv('data/previous_application.csv')
         
     def get_prepared_data(self):
+        """
+        Препроцесс previous_application. Дамми энкодим категориальные фичи и агрегируем все признаки: 'sum', 'min', 'max', 'mean'.
+        
+        Returns:
+            previous_application_transformed (pd.DataFrame): Предобработанный previous_application.
+        """    
         previous_applications_dummy = self._dummy_encode_categorical_features(self.previous_applications)
         
         previous_application_transformed = pd.concat([

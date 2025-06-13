@@ -1,7 +1,10 @@
 from src.hypotheses.base_hypothes_runner import BaseHypothesRunner
 from src.preprocess.application_preprocessor import ApplicationPreprocessor
-    
-class HypothesBadCar(BaseHypothesRunner):
+
+class HypothesExtSources(BaseHypothesRunner):
+    """
+    Гипотеза о EXT_SOURCES_*.
+    """
     def __init__(self, n=None):
         super().__init__(n)
     
@@ -10,11 +13,6 @@ class HypothesBadCar(BaseHypothesRunner):
         application.delete_high_correlation_features()
         application.add_days_percents_features()
         application.add_agg_ext_sources()
-        application.add_documents_count()
-        application.add_credit_features()
-        application.add_social_circle_feature()
-        application.add_working_hours()
-        application.add_bad_car()
         
         X_train, y_train, X_test = application.get_prepared_data()
         return X_train, y_train, X_test

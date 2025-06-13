@@ -1,7 +1,10 @@
 from src.hypotheses.base_hypothes_runner import BaseHypothesRunner
 from src.preprocess.application_preprocessor import ApplicationPreprocessor
 
-class HypothesSocialCircle(BaseHypothesRunner):
+class HypothesFamilyStatus(BaseHypothesRunner):
+    """
+    Гипотеза о семейном положении.
+    """
     def __init__(self, n=None):
         super().__init__(n)
     
@@ -13,6 +16,10 @@ class HypothesSocialCircle(BaseHypothesRunner):
         application.add_documents_count()
         application.add_credit_features()
         application.add_social_circle_feature()
+        application.add_working_hours()
+        application.add_bad_car()
+        application.add_contacts_number()
+        application.add_family_status()
         
         X_train, y_train, X_test = application.get_prepared_data()
         return X_train, y_train, X_test

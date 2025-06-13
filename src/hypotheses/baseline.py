@@ -2,6 +2,12 @@ from src.hypotheses.base_hypothes_runner import BaseHypothesRunner
 from src.preprocess.application_preprocessor import ApplicationPreprocessor
     
 class Baseline(BaseHypothesRunner):
+    """
+    Бейзлайн: 
+    1. Удаление дубликатов.
+    2. Ограничение выбросов.
+    3. Дамми кодирование категориальных признаков.
+    """
     def __init__(self, n=None):
         super().__init__(n)
     

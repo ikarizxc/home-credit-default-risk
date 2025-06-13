@@ -3,10 +3,25 @@ from src.preprocess.base_preprocessor import BasePreprocessor
 
 
 class CreditCardPreprocessor(BasePreprocessor):
+    """
+    Класс для препроцессинга данных credit_card_balance.
+    """
     def __init__(self, n=None):
+        """
+        Загружает credit_card_balance CSV.
+
+        Args:
+            n (Optional[int]): Кол-во загружаемых строк из csv файлов.
+        """
         self.credit_card_balance = pd.read_csv('data/credit_card_balance.csv', nrows=n)
         
     def get_prepared_data(self):
+        """
+        Препроцесс credit_card_balance. Дамми энкодим категориальные фичи и агрегируем все признаки: 'sum', 'min', 'max', 'mean'.
+        
+        Returns:
+            credit_card_balance_transformed (pd.DataFrame): Предобработанный credit_card_balance.
+        """
         credit_card_balance_dummy = self._dummy_encode_categorical_features(self.credit_card_balance)
         
         credit_card_balance_transformed = pd.concat([

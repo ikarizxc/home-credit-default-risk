@@ -10,14 +10,14 @@ from .preprocess.previous_applications_preprocessor import PreviousApplicationsP
 
 from .hypotheses.base_hypothes_runner import BaseHypothesRunner
 from .hypotheses.baseline import Baseline
-from .hypotheses.hypothes_1 import HypothesCorrelation
-from .hypotheses.hypothes_2 import HypothesDaysPercents
-from .hypotheses.hypothes_3 import HypothesExtSources
-from .hypotheses.hypothes_4 import HypothesDocuments
-from .hypotheses.hypothes_5 import HypothesCredit
-from .hypotheses.hypothes_6 import HypothesSocialCircle
-from .hypotheses.hypothes_7 import HypothesWorkingHours
-from .hypotheses.hypothes_8 import HypothesBadCar
-from .hypotheses.hypothes_9 import HypothesContactsNumber
-from .hypotheses.hypothes_10 import HypothesFamilyStatus
+from .hypotheses.hypothes_correlation import HypothesCorrelation
+from .hypotheses.hypothes_days_percents import HypothesDaysPercents
+from .hypotheses.hypothes_ext_sources import HypothesExtSources
+from .hypotheses.hypothes_documents import HypothesDocuments
+from .hypotheses.hypothes_credit import HypothesCredit
+from .hypotheses.hypothes_social_circle import HypothesSocialCircle
+from .hypotheses.hypothes_working_hours import HypothesWorkingHours
+from .hypotheses.hypothes_bad_car import HypothesBadCar
+from .hypotheses.hypothes_number_of_contacts import HypothesNumberOfContacts
+from .hypotheses.hypothes_family_status import HypothesFamilyStatus
 from .hypotheses.only_good_hypotheses import OnlyGoodHypotheses

@@ -3,10 +3,25 @@ from src.preprocess.base_preprocessor import BasePreprocessor
 
 
 class InstallmentsPaymentsPreprocessor(BasePreprocessor):
+    """
+    Класс для препроцессинга данных installments_payments.
+    """
     def __init__(self, n=None):
+        """
+        Загружает installments_payments CSV.
+
+        Args:
+            n (Optional[int]): Кол-во загружаемых строк из csv файлов.
+        """
         self.installments_payments = pd.read_csv('data/installments_payments.csv', nrows=n)
         
-    def get_prepared_data(self):        
+    def get_prepared_data(self):    
+        """
+        Препроцесс installments_payments. Дамми энкодим категориальные фичи и агрегируем все признаки: 'sum', 'min', 'max', 'mean'.
+        
+        Returns:
+            installments_payments_transformed (pd.DataFrame): Предобработанный installments_payments.
+        """    
         installments_payments_transformed = pd.concat([
             self.installments_payments.groupby('SK_ID_CURR')[['SK_ID_PREV']].count(),
             self.installments_payments.groupby('SK_ID_CURR')[[col for col in self.installments_payments.columns if col not in ['SK_ID_PREV', 'SK_ID_CURR']]].agg(['sum', 'min', 'max', 'mean']),

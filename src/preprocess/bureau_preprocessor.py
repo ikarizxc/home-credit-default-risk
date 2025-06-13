@@ -3,11 +3,26 @@ from src.preprocess.base_preprocessor import BasePreprocessor
 
 
 class BureauPreprocessor(BasePreprocessor):
+    """
+    Класс для препроцессинга данных bureau и bureau_balance.
+    """
     def __init__(self, n=None):
+        """
+        Загружает bureau и bureau_balance CSV.
+
+        Args:
+            n (Optional[int]): Кол-во загружаемых строк из csv файлов.
+        """
         self.bureau_balance = pd.read_csv('data/bureau_balance.csv', nrows=n)
         self.bureau = pd.read_csv('data/bureau.csv', nrows=n)
         
     def _get_prepared_bureau_balance(self) -> pd.DataFrame:
+        """
+        Препроцесс bureau_balance. Дамми энкодим категориальные фичи и агрегируем все признаки: 'sum', 'min', 'max', 'mean'.
+        
+        Returns:
+            bureau_balance_transformed (pd.DataFrame): Предобработанный bureau_balance.
+        """
         bureau_balance_dummy = self._dummy_encode_categorical_features(self.bureau_balance)
         
         bureau_balance_transformed = pd.concat([
@@ -22,6 +37,12 @@ class BureauPreprocessor(BasePreprocessor):
         return bureau_balance_transformed
         
     def get_prepared_data(self):
+        """
+        Препроцесс bureau. Дамми энкодим категориальные фичи и агрегируем все признаки: 'sum', 'min', 'max', 'mean'.
+        
+        Returns:
+            bureau_transformed (pd.DataFrame): Предобработанный bureau.
+        """
         bureau_balance_transformed = self._get_prepared_bureau_balance()
         
         bureau_dummy = self._dummy_encode_categorical_features(self.bureau)

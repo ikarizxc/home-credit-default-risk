@@ -2,6 +2,9 @@ from src.hypotheses.base_hypothes_runner import BaseHypothesRunner
 from src.preprocess.application_preprocessor import ApplicationPreprocessor
     
 class OnlyGoodHypotheses(BaseHypothesRunner):
+    """
+    Только гипотезы с приростом метрики.
+    """
     def __init__(self, n=None):
         super().__init__(n)
     
