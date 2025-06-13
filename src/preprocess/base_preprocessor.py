@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
+import logging
 from typing import List
 import pandas as pd
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 class BasePreprocessor(ABC):
     """
@@ -37,6 +40,9 @@ class BasePreprocessor(ABC):
                 .astype(int)
             )
             df_dummy_encoded = pd.concat([df_dummy_encoded.drop(col, axis=1), dummies], axis=1)
+            logger.debug(f"Encoded column '{col}' into {dummies.shape[1]} dummy vars")
+            
+        logger.info(f"Dummy encoding completed for columns: {cat_cols}")
         return df_dummy_encoded
     
     def _delete_high_correlation_features(self, df: pd.DataFrame, threshold: float=0.85) -> pd.DataFrame:
@@ -60,6 +66,8 @@ class BasePreprocessor(ABC):
         
         df_reduced = df.copy()
         df_reduced.drop(columns=to_drop, inplace=True)
+        
+        logger.info(f"Dropped high-corr features: {to_drop}")
         return df_reduced
     
     def _cap_outliers(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -79,8 +87,11 @@ class BasePreprocessor(ABC):
             q1, q3 = ser.quantile([0.25, 0.75])
             iqr = q3 - q1
             low, high = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+            before = ((ser < low) | (ser > high)).sum()
             df_capped[col] = ser.clip(lower=low, upper=high)
+            logger.debug(f"Capped {before} outliers in '{col}' to [{low}, {high}]")
             
+        logger.info(f"Outlier capping completed for columns: {num_cols}")
         return df_capped
         
     def _delete_duplicates(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -93,8 +104,12 @@ class BasePreprocessor(ABC):
         Returns:
             pd.DataFrame: DataFrame без дубликатов.
         """
-        df_no_duplicates = df.copy()
-        return df_no_duplicates.drop_duplicates()
+        init_length = len(df)
+        df_no_duplicates = df.copy().drop_duplicates()
+        removed = init_length - len(df_no_duplicates)
+        
+        logger.info(f"Removed {removed} duplicate rows")
+        return df_no_duplicates
     
     def _fill_null_values(self, df: pd.DataFrame, columns, value) -> pd.DataFrame:
         """
@@ -108,6 +123,7 @@ class BasePreprocessor(ABC):
             df (pd.DataFrame): DataFrame без пропусков.
         """
         df_filled = df.copy()[columns].fillna(value)
+        logger.info(f"Filled nulls for columns: {columns}")
         return df_filled
     
     def _get_categorical_features(self, df: pd.DataFrame) -> List[str]:
@@ -120,6 +136,9 @@ class BasePreprocessor(ABC):
         Returns:
             List[str]: Список имен категориальных столбцов.
         """
-        return df.select_dtypes(
+        cat_cols = df.select_dtypes(
             include=['object', 'category', 'string']
         ).columns.tolist()
+        
+        logger.debug(f"Categorical features: {cat_cols}")
+        return cat_cols

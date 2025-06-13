@@ -1,3 +1,4 @@
+from .logging_config import configure_root_logger
 from .model_trainer import ModelTrainer
 
 from .preprocess.base_preprocessor import BasePreprocessor
@@ -21,3 +22,5 @@ from .hypotheses.hypothes_bad_car import HypothesBadCar
 from .hypotheses.hypothes_number_of_contacts import HypothesNumberOfContacts
 from .hypotheses.hypothes_family_status import HypothesFamilyStatus
 from .hypotheses.only_good_hypotheses import OnlyGoodHypotheses
+
+configure_root_logger()
