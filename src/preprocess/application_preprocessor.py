@@ -105,35 +105,54 @@ class ApplicationPreprocessor(BasePreprocessor):
         """
         Добавляет признаки: соотношений кредитных величин.
         """
-        self._X['CREDIT_INCOME_RATIO'] = self._X['AMT_CREDIT'] / self._X['AMT_INCOME_TOTAL']
-        self._X['ANNUITY_CREDIT_RATIO'] = self._X['AMT_ANNUITY'] / self._X['AMT_CREDIT']
-        self._X['CREDIT_MONTHS'] = self._X['AMT_CREDIT'] / self._X['AMT_ANNUITY']
-        self._X['INITIAL_CREDIT_PAY'] = self._X['AMT_GOODS_PRICE'] - self._X['AMT_CREDIT']
+        new_features = {
+            'CREDIT_INCOME_RATIO': self._X['AMT_CREDIT'] / self._X['AMT_INCOME_TOTAL'],
+            'ANNUITY_CREDIT_RATIO': self._X['AMT_ANNUITY'] / self._X['AMT_CREDIT'],
+            'CREDIT_MONTHS': self._X['AMT_CREDIT'] / self._X['AMT_ANNUITY'],
+            'INITIAL_CREDIT_PAY': self._X['AMT_GOODS_PRICE'] - self._X['AMT_CREDIT'],
+        }
+        self._X = pd.concat([self._X, pd.DataFrame(new_features, index=self._X.index)], axis=1)
         
     def add_documents_count(self) -> None:
         """
         Добавляет признак: количество поданных документов FLAG_DOCUMENT_*.
         """
-        self._X['DOCUMENTS_COUNT'] = self._X[[col for col in self._X.columns.values if col.startswith('FLAG_DOCUMENT')]].sum(axis=1)
+        new_features = {
+            'DOCUMENTS_COUNT': self._X[[col for col in self._X.columns.values if col.startswith('FLAG_DOCUMENT')]].sum(axis=1),
+        }
+        self._X = pd.concat([self._X, pd.DataFrame(new_features, index=self._X.index)], axis=1)
         
     def add_agg_ext_sources(self) -> None:
         """
         Добавляет признаки: агрегация EXT_SOURCE_{1,2,3}: min/max/mean/std/ratio/weighted.
-        """
-        self._X["EXT_SOURCE_MIN"] = self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].min(axis=1)
-        self._X["EXT_SOURCE_MAX"] = self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].max(axis=1)
-        self._X["EXT_SOURCE_MEAN"] = self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].mean(axis=1)
-        self._X["EXT_SOURCE_STD"] = self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].std(axis=1)
-        self._X["EXT_SOURCE_MIN_MAX_DIV"] = self._X['EXT_SOURCE_MIN'] / self._X['EXT_SOURCE_MAX']
-        self._X["EXT_SOURCE_WEIGHTED"] = (self._X['EXT_SOURCE_1'] + 5 * self._X['EXT_SOURCE_2'] + 3 * self._X['EXT_SOURCE_3']) / 3
+        """        
+        new_features = {
+            "EXT_SOURCE_MIN": self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].min(axis=1),
+            "EXT_SOURCE_MAX": self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].max(axis=1),
+            "EXT_SOURCE_MEAN": self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].mean(axis=1),
+            "EXT_SOURCE_STD": self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].std(axis=1),
+            "EXT_SOURCE_MIN_MAX_DIV": 
+                self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].min(axis=1)
+                / self._X[['EXT_SOURCE_1', 'EXT_SOURCE_2', 'EXT_SOURCE_3']].max(axis=1),
+            "EXT_SOURCE_WEIGHTED": 
+                (
+                    self._X['EXT_SOURCE_1'] + 
+                    5 * self._X['EXT_SOURCE_2'] + 
+                    3 * self._X['EXT_SOURCE_3']
+                 ) / 3
+        }
+        self._X = pd.concat([self._X, pd.DataFrame(new_features, index=self._X.index)], axis=1)
         
     def add_days_percents_features(self) -> None:
         """
         Добавляет признаки соотношения дней: Employment/Birth, Registration/Birth, Publish/Birth.
         """
-        self._X['DAYS_EMP_BIRTH_PERCENT'] = self._X['DAYS_EMPLOYED'] / self._X['DAYS_BIRTH']
-        self._X['DAYS_REG_BIRTH_PERCENT'] = self._X['DAYS_REGISTRATION'] / self._X['DAYS_BIRTH']
-        self._X['DAYS_PUB_BIRTH_PERCENT'] = self._X['DAYS_ID_PUBLISH'] / self._X['DAYS_BIRTH']
+        new_features = {
+            'DAYS_EMP_BIRTH_PERCENT': self._X['DAYS_EMPLOYED'] / self._X['DAYS_BIRTH'],
+            'DAYS_REG_BIRTH_PERCENT': self._X['DAYS_REGISTRATION'] / self._X['DAYS_BIRTH'],
+            'DAYS_PUB_BIRTH_PERCENT': self._X['DAYS_ID_PUBLISH'] / self._X['DAYS_BIRTH'],
+        }
+        self._X = pd.concat([self._X, pd.DataFrame(new_features, index=self._X.index)], axis=1)
         
     def delete_high_correlation_features(self, threshold: float=0.85) -> None:
         """
